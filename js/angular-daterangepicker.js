@@ -88,12 +88,16 @@
               return date.format(opts.locale.format);
             }
           };
-          if (opts.singleDatePicker && objValue) {
-            return f(objValue);
-          } else if (objValue.startDate) {
-            return [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator);
-          } else {
+          if (!objValue) {
             return '';
+          } else if (opts.singleDatePicker) {
+            return f(objValue);
+          } else if (!objValue.startDate) {
+            return '';
+          } else if (!objValue.endDate || opts.collapseRangeDisplay && moment(objValue.startDate).isSame(moment(objValue.endDate), 'day')) {
+            return f(objValue.startDate);
+          } else {
+            return [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator);
           }
         });
         modelCtrl.$render = function() {
